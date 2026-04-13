@@ -1,0 +1,131 @@
+{
+  "illustrationId": "1",
+  "name": "Humation 1",
+  "author": {
+    "name": "373",
+    "twitterURL": "https://twitter.com/mnmyw"
+  },
+  "subscription": false,
+  "totalHeight": 192,
+  "skinColorTextbox": true,
+  "skinColor": "FFFFFF",
+  "partsGroups": [
+    {
+      "groupId": "1",
+      "groupName": "Head",
+      "groupOffset": 0,
+      "groupOrder": 3,
+      "groupColor": "000000",
+      "groupHidden": false,
+      "width": "80",
+      "height": "80",
+      "parts": [
+        "001",
+        "002",
+        "003",
+        "004",
+        "005",
+        "006",
+        "007",
+        "008",
+        "009",
+        "010",
+        "011",
+        "012",
+        "013",
+        "014",
+        "015",
+        "016",
+        "017",
+        "018",
+        "019",
+        "020",
+        "021",
+        "022",
+        "023",
+        "024"
+      ]
+    },
+    {
+      "groupId": "2",
+      "groupName": "Body",
+      "groupOffset": 51,
+      "groupOrder": 2,
+      "groupColor": "FFFFFF",
+      "groupHidden": false,
+      "width": "80",
+      "height": "80",
+      "parts": [
+        "001",
+        "002",
+        "003",
+        "004",
+        "005",
+        "006",
+        "007",
+        "008"
+      ]
+    },
+    {
+      "groupId": "3",
+      "groupName": "Bottom",
+      "groupOffset": 85,
+      "groupOrder": 1,
+      "groupColor": "000000",
+      "groupHidden": false,
+      "width": "80",
+      "height": "107",
+      "parts": [
+        "001",
+        "002",
+        "003",
+        "004",
+        "005",
+        "006",
+        "007",
+        "008"
+      ]
+    },
+    {
+      "groupId": "4",
+      "groupName": "Item",
+      "groupOffset": 0,
+      "groupOrder": 4,
+      "groupColor": "",
+      "groupHidden": false,
+      "width": "80",
+      "height": "80",
+      "parts": [
+        "000",
+        "009",
+        "010",
+        "011",
+        "012",
+        "013",
+        "008",
+        "007",
+        "006",
+        "005",
+        "004",
+        "003",
+        "002",
+        "001"
+      ]
+    },
+    {
+      "groupId": "5",
+      "groupName": "Glasses",
+      "groupOffset": 0,
+      "groupOrder": 5,
+      "groupColor": "",
+      "groupHidden": false,
+      "width": "80",
+      "height": "80",
+      "parts": [
+        "000",
+        "001",
+        "002"
+      ]
+    }
+  ]
+}

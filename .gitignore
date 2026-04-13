@@ -1,0 +1,32 @@
+# ── Dependencies & build ──
+node_modules/
+dist/
+.vite/
+__pycache__/
+*.pyc
+
+# ── Runtime data ──
+mongo_data/
+redis_data/
+
+# ── Secrets ──
+.env
+GH-TOKEN
+
+# ── Agent / IDE tool configs ──
+.agents/
+.claude/
+.crush/
+.factory/
+.goose/
+.iflow/
+.junie/
+.kilocode/
+.github/skills/
+.impeccable.md
+skills/
+skills-lock.json
+
+# ── Large / reference assets ──
+LanKwaiFong-logo.png
+素材/
