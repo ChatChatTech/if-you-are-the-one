@@ -30,6 +30,40 @@ function hash(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s
 function getBarColor(name) { return BAR_COLORS[hash(name) % BAR_COLORS.length]; }
 function getBarRadius(userCount, maxSeats) { return 42 + ((userCount || 0) / (maxSeats || 6)) * 34; }
 const AVATAR_R = 36;
+const MOTION = {
+  quick: 140,
+  normal: 220,
+  focus: 420,
+  enter: 360,
+};
+const NODE_TOKENS = {
+  ease: d3.easeCubicOut,
+  hoverScale: {
+    person: 1.1,
+    bar: 1.06,
+    tag: 1.08,
+  },
+  selectedScale: {
+    person: 1.14,
+    bar: 1.1,
+    tag: 1.12,
+  },
+  shadow: {
+    idle: "drop-shadow(0 1px 6px rgba(0, 0, 0, 0.07))",
+    hover: "drop-shadow(0 4px 14px rgba(0, 0, 0, 0.14))",
+    selected: "drop-shadow(0 6px 18px rgba(0, 0, 0, 0.16))",
+  },
+};
+
+function getNodeRadius(node) {
+  if (node.type === "person") return AVATAR_R;
+  if (node.type === "bar") return getBarRadius(node.user_count, node.max_seats);
+  return getTagRadius(node.totalCount || node.count);
+}
+
+function getScaledRadius(node, scale) {
+  return getNodeRadius(node) * scale;
+}
 
 function optimizeAvatarUrl(url) {
   if (!url) return url;
@@ -61,27 +95,34 @@ export function renderStreet(app) {
 
   app.innerHTML = `
     <div class="street-layout newsprint-page street-newsprint">
-      <div id="graph-container" style="position:fixed;inset:0;z-index:1;background:var(--np-bg)"></div>
-      <div class="network-search-container" id="street-search">
-        <div class="network-search-bar">
-          <div class="filter-toggle">
-            <button class="filter-option active" data-filter="everyone">Everyone</button>
-            <button class="filter-option" data-filter="circle">My Circle</button>
-          </div>
-          <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
-            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-          </svg>
-          <input type="text" class="network-search-input" id="street-search-input" placeholder="Search people by name, bio, or tags..." autocomplete="off" />
-        </div>
-        <div class="search-results-dropdown" id="street-search-results"></div>
+      <div class="street-layer street-layer--graph">
+        <div id="graph-container" style="position:fixed;inset:0;z-index:1;background:var(--np-bg)"></div>
       </div>
-      <nav class="bottomnav">
-        <button class="bottomnav__item bottomnav__item--active" data-tab="street">${icon.home(18)}<span>街区</span></button>
-        <button class="bottomnav__item" data-tab="lobster">${icon.shell(18)}<span>龙虾池</span></button>
-        <button class="bottomnav__item" data-tab="hot">${icon.flame(18)}<span>热榜</span></button>
-        <button class="bottomnav__item" data-tab="me">${icon.user(18)}<span>我的</span></button>
-      </nav>
+      <div class="street-layer street-layer--info" id="street-info-layer"></div>
+      <div class="street-layer street-layer--controls">
+        <div class="network-search-container" id="street-search">
+          <div class="network-search-bar">
+            <div class="filter-toggle">
+              <button class="filter-option active" data-filter="everyone">Everyone</button>
+              <button class="filter-option" data-filter="circle">My Circle</button>
+            </div>
+            <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+            <input type="text" class="network-search-input" id="street-search-input" placeholder="Search people by name, bio, or tags..." autocomplete="off" />
+          </div>
+          <div class="search-results-dropdown" id="street-search-results"></div>
+        </div>
+        <nav class="bottomnav">
+          <button class="bottomnav__item bottomnav__item--active" data-tab="street">${icon.home(18)}<span>街区</span></button>
+          <button class="bottomnav__item" data-tab="lobster">${icon.shell(18)}<span>龙虾池</span></button>
+          <button class="bottomnav__item" data-tab="hot">${icon.flame(18)}<span>热榜</span></button>
+          <button class="bottomnav__item" data-tab="me">${icon.user(18)}<span>我的</span></button>
+        </nav>
+      </div>
     </div>`;
+
+  const infoLayer = d3.select("#street-info-layer");
 
   // ── Nav ──
   document.querySelectorAll(".bottomnav__item").forEach((btn) =>
@@ -243,24 +284,24 @@ export function renderStreet(app) {
       }
 
       // Border ring
-      ng.append("circle").attr("class", "person-ring").attr("r", AVATAR_R)
+      ng.append("circle").attr("class", "person-ring node-visual").attr("r", AVATAR_R)
         .attr("fill", "none")
         .attr("stroke", "rgba(0, 0, 0, 0.08)")
         .attr("stroke-width", 2)
         .style("pointer-events", "none")
-        .style("filter", "drop-shadow(0 1px 6px rgba(0, 0, 0, 0.07))")
+        .style("filter", NODE_TOKENS.shadow.idle)
         .style("transition", "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)");
     });
 
     function applyGraphQuality(settled) {
-      const effect = settled ? "drop-shadow(0 1px 6px rgba(0, 0, 0, 0.07))" : "none";
+      const effect = settled ? NODE_TOKENS.shadow.idle : "none";
       g.selectAll(".person-ring").style("filter", effect);
       if (settled) {
-        g.selectAll(".bar-node circle").style("filter", "drop-shadow(0 1px 6px rgba(0,0,0,0.08))");
-        g.selectAll(".tag-node circle").style("filter", "drop-shadow(0 1px 4px rgba(0,0,0,0.06))");
+        g.selectAll(".bar-node .node-visual").style("filter", NODE_TOKENS.shadow.idle);
+        g.selectAll(".tag-node .node-visual").style("filter", NODE_TOKENS.shadow.idle);
       } else {
-        g.selectAll(".bar-node circle").style("filter", "none");
-        g.selectAll(".tag-node circle").style("filter", "none");
+        g.selectAll(".bar-node .node-visual").style("filter", "none");
+        g.selectAll(".tag-node .node-visual").style("filter", "none");
       }
     }
 
@@ -272,11 +313,11 @@ export function renderStreet(app) {
       const r = getBarRadius(d.user_count, d.max_seats);
       const color = getBarColor(d.name);
 
-      ng.append("circle").attr("r", r)
+      ng.append("circle").attr("class", "node-visual").attr("r", r)
         .attr("fill", color).attr("fill-opacity", 0.12)
         .attr("stroke", color).attr("stroke-width", 2).attr("stroke-opacity", 0.4)
         .style("cursor", "pointer")
-        .style("filter", "drop-shadow(0 2px 10px rgba(0,0,0,0.1))")
+        .style("filter", NODE_TOKENS.shadow.idle)
         .style("transition", "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)");
 
       const maxChars = Math.max(4, Math.floor(r / 7));
@@ -297,13 +338,13 @@ export function renderStreet(app) {
       const ng = d3.select(this);
       const r = getTagRadius(d.totalCount || d.count);
 
-      ng.append("circle").attr("r", r)
+      ng.append("circle").attr("class", "node-visual").attr("r", r)
         .attr("fill", getTagColor())
         .attr("fill-opacity", 0.85)
         .attr("stroke", "rgba(255,255,255,0.6)")
         .attr("stroke-width", 1)
         .style("cursor", "pointer")
-        .style("filter", "drop-shadow(0 1px 6px rgba(0, 0, 0, 0.08))")
+        .style("filter", NODE_TOKENS.shadow.idle)
         .style("transition", "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)");
 
       const shouldShowLabel = r > 30;
@@ -319,19 +360,13 @@ export function renderStreet(app) {
 
     // ── Staggered fade-in ──
     node.style("opacity", 0)
-      .transition().duration(600).delay((d, i) => i * 15)
+      .transition().duration(MOTION.enter).delay((d, i) => Math.min(i * 8, 220))
       .ease(d3.easeCubicOut).style("opacity", 1);
 
     // ═══ Tick — links stop at node edges (ClawMatch style) ═══
     simulation.on("tick", () => {
       tickCounter += 1;
       if (tickCounter % 2 !== 0) return;
-      const getNodeRadius = (n) => {
-        if (n.type === "person") return AVATAR_R;
-        if (n.type === "bar") return getBarRadius(n.user_count, n.max_seats);
-        return getTagRadius(n.totalCount || n.count);
-      };
-
       allLink
         .attr("x1", d => {
           const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y;
@@ -393,34 +428,24 @@ export function renderStreet(app) {
       if (d.type === "tag") {
         d3.select(this).select(".tag-label").transition().duration(200).style("opacity", 1);
       }
-      d3.select(this).select("circle")
-        .transition().duration(300).ease(d3.easeCubicOut)
-        .attr("r", d => {
-          if (d.type === "person") return AVATAR_R + 4;
-          if (d.type === "bar") return getBarRadius(d.user_count, d.max_seats) * 1.06;
-          return getTagRadius(d.totalCount || d.count) * 1.08;
-        })
-        .style("filter", "drop-shadow(0 6px 20px rgba(0, 0, 0, 0.12))");
+      d3.select(this).select(".node-visual")
+        .transition().duration(MOTION.normal).ease(NODE_TOKENS.ease)
+        .attr("r", (n) => getScaledRadius(n, NODE_TOKENS.hoverScale[n.type] || 1.06))
+        .style("filter", NODE_TOKENS.shadow.hover);
     }
 
     function handleNodeLeave(event, d) {
       hideProfileCard();
       if (d.type === "tag") {
         const r = getTagRadius(d.totalCount || d.count);
-        d3.select(this).select(".tag-label").transition().duration(200)
+        d3.select(this).select(".tag-label").transition().duration(MOTION.quick)
           .style("opacity", r > 30 ? 1 : 0);
       }
       if (!selectedNode) {
-        d3.select(this).select("circle")
-          .transition().duration(300).ease(d3.easeCubicOut)
-          .attr("r", d => {
-            if (d.type === "person") return AVATAR_R;
-            if (d.type === "bar") return getBarRadius(d.user_count, d.max_seats);
-            return getTagRadius(d.totalCount || d.count);
-          })
-          .style("filter", d => d.type === "person"
-            ? "drop-shadow(0 2px 12px rgba(0, 0, 0, 0.08))"
-            : "drop-shadow(0 1px 6px rgba(0, 0, 0, 0.08))");
+        d3.select(this).select(".node-visual")
+          .transition().duration(MOTION.normal).ease(NODE_TOKENS.ease)
+          .attr("r", (n) => getNodeRadius(n))
+          .style("filter", NODE_TOKENS.shadow.idle);
       }
     }
 
@@ -430,7 +455,7 @@ export function renderStreet(app) {
       const scale = currentT.k;
       const x = -nd.x * scale + width / 2;
       const y = -nd.y * scale + height / 2;
-      svg.transition().duration(750).ease(d3.easeCubicInOut)
+      svg.transition().duration(MOTION.focus).ease(d3.easeCubicInOut)
         .call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
     }
 
@@ -442,18 +467,39 @@ export function renderStreet(app) {
         else if (l.target.id === d.id) connectedIds.add(l.source.id);
       });
 
-      node.transition().duration(400).ease(d3.easeCubicOut)
+      node.transition().duration(MOTION.normal).ease(d3.easeCubicOut)
         .style("opacity", n => (n.id === d.id || connectedIds.has(n.id)) ? 1 : 0.12);
 
-      allLink.transition().duration(400).ease(d3.easeCubicOut)
+      node.select(".node-visual")
+        .transition()
+        .duration(MOTION.normal)
+        .ease(NODE_TOKENS.ease)
+        .attr("r", (n) => {
+          if (n.id === d.id) return getScaledRadius(n, NODE_TOKENS.selectedScale[n.type] || 1.08);
+          if (connectedIds.has(n.id)) return getScaledRadius(n, 1.03);
+          return getNodeRadius(n);
+        })
+        .style("filter", (n) => {
+          if (n.id === d.id) return NODE_TOKENS.shadow.selected;
+          if (connectedIds.has(n.id)) return NODE_TOKENS.shadow.hover;
+          return NODE_TOKENS.shadow.idle;
+        });
+
+      allLink.transition().duration(MOTION.normal).ease(d3.easeCubicOut)
         .style("opacity", l => (l.source.id === d.id || l.target.id === d.id) ? 1 : 0.03)
         .attr("stroke-width", l => (l.source.id === d.id || l.target.id === d.id) ? 2 : 1)
         .attr("stroke", l => (l.source.id === d.id || l.target.id === d.id) ? "#0071e3" : "rgba(0,0,0,0.06)");
     }
 
     function resetHighlight() {
-      node.transition().duration(400).ease(d3.easeCubicOut).style("opacity", 1);
-      allLink.transition().duration(400).ease(d3.easeCubicOut)
+      node.transition().duration(MOTION.normal).ease(d3.easeCubicOut).style("opacity", 1);
+      node.select(".node-visual")
+        .transition()
+        .duration(MOTION.normal)
+        .ease(NODE_TOKENS.ease)
+        .attr("r", (n) => getNodeRadius(n))
+        .style("filter", NODE_TOKENS.shadow.idle);
+      allLink.transition().duration(MOTION.normal).ease(d3.easeCubicOut)
         .style("opacity", 0.5).attr("stroke-width", 1).attr("stroke", "rgba(0, 0, 0, 0.06)");
     }
 
@@ -475,7 +521,7 @@ export function renderStreet(app) {
     function showProfileCard(event, d) {
       if (selectedNode) return;
       hideProfileCard();
-      profileCard = d3.select("body").append("div")
+      profileCard = infoLayer.append("div")
         .attr("class", "profile-card")
         .style("position", "absolute")
         .style("left", (event.pageX + 20) + "px")
@@ -499,20 +545,20 @@ export function renderStreet(app) {
         </div>` : ""}
       `);
 
-      profileCard.transition().duration(300).ease(d3.easeCubicOut)
+      profileCard.transition().duration(MOTION.normal).ease(d3.easeCubicOut)
         .style("opacity", 1).style("transform", "translateY(0)");
     }
 
     function hideProfileCard() {
       if (profileCard) {
-        profileCard.transition().duration(200).style("opacity", 0).remove();
+        profileCard.transition().duration(MOTION.quick).style("opacity", 0).remove();
         profileCard = null;
       }
     }
 
     function showSelectedProfileCard(d) {
       hideSelectedProfileCard();
-      selectedProfileCard = d3.select("body").append("div")
+      selectedProfileCard = infoLayer.append("div")
         .attr("class", "profile-card profile-card-selected")
         .style("position", "fixed").style("z-index", "20000")
         .style("top", "24px").style("right", "24px")
@@ -570,13 +616,13 @@ export function renderStreet(app) {
         });
       }
 
-      selectedProfileCard.transition().duration(400).ease(d3.easeCubicOut)
+      selectedProfileCard.transition().duration(MOTION.normal).ease(d3.easeCubicOut)
         .style("opacity", 1).style("transform", "translateX(0)");
     }
 
     function hideSelectedProfileCard() {
       if (selectedProfileCard) {
-        selectedProfileCard.transition().duration(300)
+        selectedProfileCard.transition().duration(MOTION.quick)
           .style("opacity", 0).style("transform", "translateX(20px)").remove();
         selectedProfileCard = null;
       }
@@ -588,7 +634,7 @@ export function renderStreet(app) {
       const tagName = d.name;
       const connectedPeople = nodesData.filter(n => n.type === "person" && n.tags && n.tags.includes(tagName));
 
-      selectedTagCard = d3.select("body").append("div")
+      selectedTagCard = infoLayer.append("div")
         .attr("class", "profile-card profile-card-selected tag-card")
         .style("position", "fixed").style("z-index", "20000")
         .style("top", "24px").style("right", "24px")
@@ -626,13 +672,13 @@ export function renderStreet(app) {
         }
       });
 
-      selectedTagCard.transition().duration(400).ease(d3.easeCubicOut)
+      selectedTagCard.transition().duration(MOTION.normal).ease(d3.easeCubicOut)
         .style("opacity", 1).style("transform", "translateX(0)");
     }
 
     function hideSelectedTagCard() {
       if (selectedTagCard) {
-        selectedTagCard.transition().duration(300)
+        selectedTagCard.transition().duration(MOTION.quick)
           .style("opacity", 0).style("transform", "translateX(20px)").remove();
         selectedTagCard = null;
       }
@@ -641,7 +687,7 @@ export function renderStreet(app) {
     // ═══ Bar Card (for bar node clicks) ═══
     function showBarCard(d) {
       hideSelectedProfileCard(); hideSelectedTagCard();
-      selectedProfileCard = d3.select("body").append("div")
+      selectedProfileCard = infoLayer.append("div")
         .attr("class", "profile-card profile-card-selected")
         .style("position", "fixed").style("z-index", "20000")
         .style("top", "24px").style("right", "24px")
@@ -668,7 +714,7 @@ export function renderStreet(app) {
         navigate(`/bar/${this.dataset.barId}`);
       });
 
-      selectedProfileCard.transition().duration(400).ease(d3.easeCubicOut)
+      selectedProfileCard.transition().duration(MOTION.normal).ease(d3.easeCubicOut)
         .style("opacity", 1).style("transform", "translateX(0)");
     }
 
@@ -720,7 +766,7 @@ export function renderStreet(app) {
   return () => {
     if (simulation) simulation.stop();
     if (searchCleanup) searchCleanup();
-    d3.selectAll(".profile-card").remove();
+    infoLayer.selectAll(".profile-card").remove();
     document.body.classList.remove("street-newsprint-active");
   };
 }
