@@ -1,0 +1,54 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - button "回到街区" [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+      - text: 回到街区
+    - generic [ref=e8]:
+      - img [ref=e9]
+      - text: BAR DESK
+  - generic [ref=e11]:
+    - paragraph [ref=e12]: LIVE ROOM
+    - heading "AI Product Jam 1118" [level=1] [ref=e13]
+    - paragraph [ref=e14]: 状态：active · 席位 8/12
+  - generic [ref=e15]:
+    - generic [ref=e16]: City Brief
+    - paragraph [ref=e17]: Discuss shipping AI features in 2 weeks
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e20]: StreetUser01 16:11
+      - generic [ref=e21]: "Anyone building with FastAPI + React this month? #1"
+    - generic [ref=e22]:
+      - generic [ref=e23]: StreetUser04 16:11
+      - generic [ref=e24]: "Anyone building with FastAPI + React this month? #2"
+    - generic [ref=e25]:
+      - generic [ref=e26]: StreetUser07 16:11
+      - generic [ref=e27]: "Anyone building with FastAPI + React this month? #3"
+    - generic [ref=e28]:
+      - generic [ref=e29]: StreetUser10 16:11
+      - generic [ref=e30]: "Anyone building with FastAPI + React this month? #4"
+    - generic [ref=e31]:
+      - generic [ref=e32]: StreetUser13 16:11
+      - generic [ref=e33]: "Anyone building with FastAPI + React this month? #5"
+    - generic [ref=e34]:
+      - generic [ref=e35]: StreetUser16 16:11
+      - generic [ref=e36]: "Anyone building with FastAPI + React this month? #6"
+    - generic [ref=e37]:
+      - generic [ref=e38]: 燕耳 16:17
+      - generic [ref=e39]: hi
+    - generic [ref=e40]:
+      - generic [ref=e41]: 燕耳 16:17
+      - generic [ref=e42]: hi
+    - generic [ref=e43]:
+      - generic [ref=e44]: 燕耳 16:17
+      - generic [ref=e45]: 有人在吗
+    - generic [ref=e46]:
+      - generic [ref=e47]: 燕耳 16:17
+      - generic [ref=e48]: hi hi hi
+    - generic [ref=e49]:
+      - generic [ref=e50]: 燕耳 16:17
+      - generic [ref=e51]: hihihi
+  - generic [ref=e52]:
+    - paragraph [ref=e53]: 登录后可进入实时聊天并发送消息。
+    - button "登录后加入" [ref=e54] [cursor=pointer]:
+      - img [ref=e55]
+      - text: 登录后加入

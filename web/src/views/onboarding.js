@@ -22,6 +22,9 @@ function esc(str) {
 const STEP_TITLES = ["基础信息", "技能 & 兴趣", "形象定制", "性格测试", "Agent 护照"];
 
 export function renderOnboarding(app) {
+  const params = new URLSearchParams(location.search);
+  const nextPath = params.get("next");
+  const safeNext = nextPath && nextPath.startsWith("/") ? nextPath : "/";
   let step = 0;
   let avatarEditorApi = null;
   let testType = null; // 'mbti' | 'sbti'
@@ -44,9 +47,10 @@ export function renderOnboarding(app) {
 
   function renderShell() {
     app.innerHTML = `
-      <div class="onboarding-wrap">
+      <div class="onboarding-wrap newsprint-page">
         <div class="onboarding-header">
-          <h1 class="topbar__title" style="font-size:24px">${icon.mapPin(20)} nightclub</h1>
+          <p class="np-kicker">ONBOARDING DESK</p>
+          <h1 class="topbar__title" style="font-size:24px">${icon.mapPin(20)} 夜场入场登记</h1>
           <div class="onboarding-progress">
             ${STEP_TITLES.map((t, i) => `<div class="progress-dot ${i <= step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}" title="${t}"><span>${i + 1}</span></div>`).join('<div class="progress-line"></div>')}
           </div>
@@ -71,25 +75,40 @@ export function renderOnboarding(app) {
   // ── Step 0: Basic info + account creation ──
   function renderStep0(body, footer) {
     body.innerHTML = `
-      <div class="ob-form">
-        <label class="ob-label">昵称 <span class="ob-required">*</span></label>
-        <input type="text" id="f-nickname" class="ob-input" placeholder="今晚姓什么？" value="${esc(data.nickname)}" maxlength="30" required />
+      <div class="ob-auth-split">
+        <div class="ob-auth-form-wrap">
+          <div class="ob-form">
+            <label class="ob-label">昵称 <span class="ob-required">*</span></label>
+            <input type="text" id="f-nickname" class="ob-input" placeholder="今晚姓什么？" value="${esc(data.nickname)}" maxlength="30" required />
 
-        <label class="ob-label">一句话介绍</label>
-        <input type="text" id="f-bio" class="ob-input" placeholder="一句话让别人记住你" value="${esc(data.bio)}" maxlength="200" />
+            <label class="ob-label">一句话介绍</label>
+            <input type="text" id="f-bio" class="ob-input" placeholder="一句话让别人记住你" value="${esc(data.bio)}" maxlength="200" />
 
-        <label class="ob-label">邮箱 <span class="ob-required">*</span></label>
-        <input type="email" id="f-email" class="ob-input" placeholder="you@example.com" value="${esc(data.email)}" />
+            <label class="ob-label">邮箱 <span class="ob-required">*</span></label>
+            <input type="email" id="f-email" class="ob-input" placeholder="you@example.com" value="${esc(data.email)}" />
 
-        <label class="ob-label">密码 <span class="ob-required">*</span></label>
-        <input type="password" id="f-password" class="ob-input" placeholder="至少 6 位" value="${esc(data.password)}" />
+            <label class="ob-label">密码 <span class="ob-required">*</span></label>
+            <input type="password" id="f-password" class="ob-input" placeholder="至少 6 位" value="${esc(data.password)}" />
+          </div>
+        </div>
+
+        <aside class="ob-media-panel">
+          <p class="ob-media-kicker">MATERIAL BOARD</p>
+          <h3 class="ob-media-title">素材展示区</h3>
+          <p class="ob-media-desc">这里是右侧素材位。你给我素材后，我会帮你换成正式内容并做排版。</p>
+          <div class="ob-media-placeholder">
+            <span>素材占位</span>
+          </div>
+        </aside>
       </div>`;
 
     footer.innerHTML = `
       <button class="btn btn-ghost" id="btn-to-login">已有账号？登录</button>
       <button class="btn btn-primary" id="btn-next">下一步 ${icon.arrowLeft(12)}</button>`;
 
-    document.getElementById("btn-to-login").addEventListener("click", () => navigate("/login"));
+    document.getElementById("btn-to-login").addEventListener("click", () => {
+      navigate(`/login${safeNext !== "/" ? `?next=${encodeURIComponent(safeNext)}` : ""}`);
+    });
     document.getElementById("btn-next").addEventListener("click", async () => {
       data.nickname = document.getElementById("f-nickname").value.trim();
       data.bio = document.getElementById("f-bio").value.trim();
@@ -125,20 +144,30 @@ export function renderOnboarding(app) {
         <label class="ob-label">${icon.tag(12)} 我能提供的技能</label>
         <div class="tag-input-wrap" id="offer-tags">
           <div class="tag-list" id="offer-list"></div>
-          <input type="text" class="ob-input tag-input" id="offer-input" placeholder="输入技能后按回车，如: React, Python..." />
+          <div class="tag-input-row">
+            <input type="text" class="ob-input tag-input" id="offer-input" placeholder="如: React, Python..." />
+            <button type="button" class="btn btn-secondary btn-sm tag-add-btn" id="offer-add">添加</button>
+          </div>
         </div>
 
         <label class="ob-label">${icon.search(12)} 我想找的技能 / 资源</label>
         <div class="tag-input-wrap" id="want-tags">
           <div class="tag-list" id="want-list"></div>
-          <input type="text" class="ob-input tag-input" id="want-input" placeholder="如: 设计师, 投资人..." />
+          <div class="tag-input-row">
+            <input type="text" class="ob-input tag-input" id="want-input" placeholder="如: 设计师, 投资人..." />
+            <button type="button" class="btn btn-secondary btn-sm tag-add-btn" id="want-add">添加</button>
+          </div>
         </div>
 
         <label class="ob-label">${icon.lightbulb(12)} 兴趣 / 话题</label>
         <div class="tag-input-wrap" id="interest-tags">
           <div class="tag-list" id="interest-list"></div>
-          <input type="text" class="ob-input tag-input" id="interest-input" placeholder="如: AI, Web3, 独立开发..." />
+          <div class="tag-input-row">
+            <input type="text" class="ob-input tag-input" id="interest-input" placeholder="如: AI, Web3, 独立开发..." />
+            <button type="button" class="btn btn-secondary btn-sm tag-add-btn" id="interest-add">添加</button>
+          </div>
         </div>
+        <p class="ob-tag-hint">提示：支持按回车快速添加，也可点击“添加”按钮。</p>
       </div>`;
 
     footer.innerHTML = `
@@ -169,6 +198,23 @@ export function renderOnboarding(app) {
   function setupTagInput(prefix, arr) {
     const list = document.getElementById(`${prefix}-list`);
     const input = document.getElementById(`${prefix}-input`);
+    const addBtn = document.getElementById(`${prefix}-add`);
+
+    function addTag() {
+      const val = input.value.trim().replace(/,$/,"");
+      if (!val) return;
+      if (arr.includes(val)) {
+        showToast("该标签已存在", "pink");
+        return;
+      }
+      if (arr.length >= 10) {
+        showToast("每类最多 10 个标签", "pink");
+        return;
+      }
+      arr.push(val);
+      input.value = "";
+      renderTags();
+    }
 
     function renderTags() {
       list.innerHTML = arr.map((t, i) =>
@@ -180,14 +226,10 @@ export function renderOnboarding(app) {
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === ",") {
         e.preventDefault();
-        const val = input.value.trim().replace(/,$/,"");
-        if (val && !arr.includes(val) && arr.length < 10) {
-          arr.push(val);
-          input.value = "";
-          renderTags();
-        }
+        addTag();
       }
     });
+    addBtn?.addEventListener("click", addTag);
 
     list.addEventListener("click", (e) => {
       const btn = e.target.closest(".tag-remove");
@@ -451,7 +493,7 @@ export function renderOnboarding(app) {
 
     document.getElementById("btn-enter").addEventListener("click", () => {
       showToast("欢迎来到 nightclub！今晚这里有人。", "cyan");
-      navigate("/");
+      navigate(safeNext);
     });
   }
 

@@ -4,6 +4,7 @@
 
 const routes = {};
 let currentCleanup = null;
+let renderVersion = 0;
 
 export function route(path, handler) {
   routes[path] = handler;
@@ -15,6 +16,7 @@ export function navigate(path) {
 }
 
 export function render() {
+  const currentVersion = ++renderVersion;
   const path = location.pathname;
   const app = document.getElementById("app");
   if (!app) return;
@@ -47,6 +49,24 @@ export function render() {
   }
 
   const result = handler(app, params);
+  if (result && typeof result.then === "function") {
+    result
+      .then((resolved) => {
+        if (currentVersion !== renderVersion) {
+          if (typeof resolved === "function") resolved();
+          return;
+        }
+        if (typeof resolved === "function") {
+          currentCleanup = resolved;
+        }
+      })
+      .catch((err) => {
+        if (currentVersion !== renderVersion) return;
+        app.innerHTML = `<div class="empty-state"><p>页面加载失败：${err?.message || "Unknown error"}</p></div>`;
+      });
+    return;
+  }
+
   if (typeof result === "function") {
     currentCleanup = result;
   }

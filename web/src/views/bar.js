@@ -18,15 +18,27 @@ export function renderBar(app, { id }) {
   let currentUser = null;
 
   app.innerHTML = `
-    <header class="topbar">
-      <button class="btn btn-ghost" id="btn-back">${icon.arrowLeft(14)} 回到街区</button>
-      <span class="topbar__title" id="bar-topic">载入中…</span>
-      <span id="bar-timer" style="color:var(--text-muted);font-size:12px"></span>
-    </header>
-    <div class="chat-feed" id="chat-feed"></div>
-    <div class="msg-input" id="msg-area" style="display:none">
-      <input type="text" id="msg-text" placeholder="说点什么…" maxlength="2000" autocomplete="off" />
-      <button class="btn btn-primary" id="btn-send">发送</button>
+    <div class="newsprint-page bar-newsprint">
+      <header class="topbar">
+        <button class="btn btn-ghost" id="btn-back">${icon.arrowLeft(14)} 回到街区</button>
+        <span class="topbar__title">${icon.wine(16)} BAR DESK</span>
+        <span></span>
+      </header>
+      <section class="np-bar-headline">
+        <p class="np-kicker">LIVE ROOM</p>
+        <h1 id="bar-topic">载入中…</h1>
+        <p class="np-bar-meta" id="bar-timer">正在获取房间状态</p>
+      </section>
+      <section class="bar-brief" id="bar-brief"></section>
+      <div class="chat-feed" id="chat-feed"></div>
+      <div class="bar-auth-tip" id="bar-auth-tip" style="display:none">
+        <p>登录后可进入实时聊天并发送消息。</p>
+        <button class="btn btn-secondary" id="btn-login-chat">${icon.doorOpen(12)} 登录后加入</button>
+      </div>
+      <div class="msg-input" id="msg-area" style="display:none">
+        <input type="text" id="msg-text" placeholder="说点什么…" maxlength="2000" autocomplete="off" />
+        <button class="btn btn-primary" id="btn-send">发送</button>
+      </div>
     </div>
   `;
 
@@ -37,7 +49,12 @@ export function renderBar(app, { id }) {
   async function init() {
     try {
       const bar = await api.get(`/api/bars/${id}`);
-      document.getElementById("bar-topic").innerHTML = `${icon.wine(14)} ${esc(bar.topic)}`;
+      document.getElementById("bar-topic").textContent = bar.topic;
+      document.getElementById("bar-timer").textContent = `状态：${bar.status} · 席位 ${bar.current_users.length}/${bar.max_seats}`;
+      document.getElementById("bar-brief").innerHTML = `
+        <div class="bar-brief__label">City Brief</div>
+        <p class="bar-brief__desc">${bar.description ? esc(bar.description) : "今晚的讨论正在这里发生，推门入场，留下你的观点。"}</p>
+      `;
 
       // Load messages
       const messages = await api.get(`/api/bars/${id}/messages`);
@@ -46,6 +63,7 @@ export function renderBar(app, { id }) {
       if (isLoggedIn()) {
         currentUser = await api.get("/api/users/me");
         document.getElementById("msg-area").style.display = "flex";
+        document.getElementById("bar-auth-tip").style.display = "none";
 
         // Auto join if not in this bar
         if (currentUser.current_bar_id !== id && bar.status !== "sealed") {
@@ -54,6 +72,11 @@ export function renderBar(app, { id }) {
 
         connectWs();
         setupInput();
+      } else {
+        document.getElementById("bar-auth-tip").style.display = "block";
+        document.getElementById("btn-login-chat")?.addEventListener("click", () => {
+          navigate(`/login?next=${encodeURIComponent(location.pathname)}`);
+        });
       }
     } catch (err) {
       showToast(err.message, "pink");

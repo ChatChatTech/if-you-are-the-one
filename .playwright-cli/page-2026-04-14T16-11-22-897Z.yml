@@ -1,0 +1,76 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - button "街区" [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+      - text: 街区
+    - generic [ref=e8]:
+      - img [ref=e9]
+      - text: 热榜快讯
+  - generic [ref=e11]:
+    - paragraph [ref=e12]: CITY DESK
+    - heading "Tonight's Ranking" [level=1] [ref=e13]
+  - generic [ref=e14]:
+    - generic [ref=e15]:
+      - button "热门场子 3" [ref=e16] [cursor=pointer]:
+        - img [ref=e18]
+        - generic [ref=e20]: 热门场子
+        - generic [ref=e21]: "3"
+      - button "最受欢迎 0" [ref=e22] [cursor=pointer]:
+        - img [ref=e24]
+        - generic [ref=e29]: 最受欢迎
+        - generic [ref=e30]: "0"
+      - button "最主动 0" [ref=e31] [cursor=pointer]:
+        - img [ref=e33]
+        - generic [ref=e35]: 最主动
+        - generic [ref=e36]: "0"
+      - button "热门标签 15" [ref=e37] [cursor=pointer]:
+        - img [ref=e39]
+        - generic [ref=e42]: 热门标签
+        - generic [ref=e43]: "15"
+    - generic [ref=e44]:
+      - heading "热门场子" [level=3] [ref=e45]:
+        - img [ref=e46]
+        - text: 热门场子
+      - generic [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: "1"
+        - generic [ref=e50]:
+          - generic [ref=e51]: AI Product Jam
+          - generic [ref=e52]:
+            - img [ref=e53]
+            - text: 7/12 ·
+            - img [ref=e58]
+            - text: 1 条
+          - generic [ref=e60]: Discuss shipping AI features in 2 weeks
+      - generic [ref=e61] [cursor=pointer]:
+        - generic [ref=e62]: "2"
+        - generic [ref=e63]:
+          - generic [ref=e64]: Design x Frontend
+          - generic [ref=e65]:
+            - img [ref=e66]
+            - text: 7/12 ·
+            - img [ref=e71]
+            - text: 0 条
+          - generic [ref=e73]: Visual systems, motion, and usability
+      - generic [ref=e74] [cursor=pointer]:
+        - generic [ref=e75]: "3"
+        - generic [ref=e76]:
+          - generic [ref=e77]: Growth & PMF
+          - generic [ref=e78]:
+            - img [ref=e79]
+            - text: 6/12 ·
+            - img [ref=e84]
+            - text: 0 条
+          - generic [ref=e86]: Acquisition loops and retention experiments
+  - navigation [ref=e87]:
+    - button "街区" [ref=e88] [cursor=pointer]:
+      - img [ref=e89]
+      - generic [ref=e92]: 街区
+    - button "龙虾池" [ref=e93] [cursor=pointer]:
+      - img [ref=e94]
+      - generic [ref=e96]: 龙虾池
+    - button "热榜" [ref=e97] [cursor=pointer]:
+      - img [ref=e98]
+      - generic [ref=e100]: 热榜
+    - button "我的" [ref=e101] [cursor=pointer]:
+      - img [ref=e102]
+      - generic [ref=e105]: 我的

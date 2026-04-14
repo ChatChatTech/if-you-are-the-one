@@ -1,0 +1,36 @@
+- generic [ref=e203]:
+  - generic [ref=e204]:
+    - heading "nightclub" [level=1] [ref=e205]:
+      - img [ref=e206]
+      - text: nightclub
+    - generic [ref=e209]:
+      - generic "基础信息" [ref=e210]:
+        - generic [ref=e211]: "1"
+      - generic "技能 & 兴趣" [ref=e213]:
+        - generic [ref=e214]: "2"
+      - generic "形象定制" [ref=e216]:
+        - generic [ref=e217]: "3"
+      - generic "性格测试" [ref=e219]:
+        - generic [ref=e220]: "4"
+      - generic "Agent 护照" [ref=e222]:
+        - generic [ref=e223]: "5"
+    - paragraph [ref=e224]: 形象定制
+  - generic [ref=e226]:
+    - paragraph [ref=e227]: 定制你的形象，让别人在夜色里认出你
+    - generic [ref=e230]:
+      - img "Avatar" [ref=e232]
+      - generic [ref=e233]:
+        - button "随机" [ref=e234] [cursor=pointer]:
+          - img [ref=e235]
+          - text: 随机
+        - button "重置" [ref=e237] [cursor=pointer]:
+          - img [ref=e238]
+          - text: 重置
+        - button "编辑" [ref=e241] [cursor=pointer]:
+          - img [ref=e242]
+          - text: 编辑
+  - generic [ref=e245]:
+    - button "跳过" [ref=e246] [cursor=pointer]
+    - button "下一步" [ref=e247] [cursor=pointer]:
+      - text: 下一步
+      - img [ref=e248]

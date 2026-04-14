@@ -1,0 +1,35 @@
+- generic [ref=e250]:
+  - generic [ref=e251]:
+    - heading "nightclub" [level=1] [ref=e252]:
+      - img [ref=e253]
+      - text: nightclub
+    - generic [ref=e256]:
+      - generic "基础信息" [ref=e257]:
+        - generic [ref=e258]: "1"
+      - generic "技能 & 兴趣" [ref=e260]:
+        - generic [ref=e261]: "2"
+      - generic "形象定制" [ref=e263]:
+        - generic [ref=e264]: "3"
+      - generic "性格测试" [ref=e266]:
+        - generic [ref=e267]: "4"
+      - generic "Agent 护照" [ref=e269]:
+        - generic [ref=e270]: "5"
+    - paragraph [ref=e271]: 性格测试
+  - generic [ref=e273]:
+    - paragraph [ref=e274]: 选一个测试，让 nightclub 更懂你
+    - generic [ref=e275]:
+      - button "MBTI 经典 16 型人格 20 道黑客松情境题 ~3 分钟" [ref=e276] [cursor=pointer]:
+        - img [ref=e278]
+        - heading "MBTI" [level=3] [ref=e288]
+        - paragraph [ref=e289]:
+          - text: 经典 16 型人格
+          - text: 20 道黑客松情境题
+        - generic [ref=e290]: ~3 分钟
+      - button "SBTI · 社交酒局指数 25 种社交原型 30+ 道喝酒社交题 ~5 分钟" [ref=e291] [cursor=pointer]:
+        - img [ref=e293]
+        - heading "SBTI · 社交酒局指数" [level=3] [ref=e297]
+        - paragraph [ref=e298]:
+          - text: 25 种社交原型
+          - text: 30+ 道喝酒社交题
+        - generic [ref=e299]: ~5 分钟
+  - button "跳过测试" [ref=e301] [cursor=pointer]

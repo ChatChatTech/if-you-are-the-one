@@ -1,0 +1,46 @@
+[    2312ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/street.js:43
+[   32598ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3001/login:0
+[   68616ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3001/onboarding:0
+[  443846ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/street.js:43
+[  503436ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[  503523ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[  585722ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/hot.js:15
+[  717634ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/lobster.js:284
+[  746184ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/street.js:43
+[  746990ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/hot.js:15
+[  747790ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[  747854ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[  754664ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/hot.js:15
+[  755668ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[  755686ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[  756704ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/hot.js:15
+[  881627ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[  881711ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[ 1424149ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/hot.js:15
+[ 1425347ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[ 1425492ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[ 1426217ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/street.js:43
+[ 1426974ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[ 1427069ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[ 1427864ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/street.js:43
+[ 1435732ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/lobster.js:284
+[ 1443333ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[ 1443522ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[ 1445433ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/hot.js:15
+[ 1446030ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[ 1446133ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[ 1457356ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/street.js:43
+[ 1458518ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/lobster.js:284
+[ 1459034ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/hot.js:15
+[ 1459405ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[ 1459489ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107
+[ 1460617ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3001/login:0
+[ 1495041ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3001/api/auth/login:0
+[ 1497525ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3001/onboarding:0
+[ 1520223ms] [ERROR] Failed to load resource: the server responded with a status of 409 (Conflict) @ http://localhost:3001/api/auth/register:0
+[ 1551563ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/street.js:43
+[ 1556436ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/lobster.js:284
+[ 1557455ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/hot.js:15
+[ 1558291ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/lobster.js:284
+[ 1560421ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:27
+[ 1560519ms] [ERROR] Error: <path> attribute d: Unexpected end of attribute. Expected number, "…0 0 1 1-20 0c0-1". @ http://localhost:3001/src/views/me.js:107

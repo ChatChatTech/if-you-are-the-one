@@ -1,0 +1,45 @@
+- generic [ref=e302]:
+  - generic [ref=e303]:
+    - heading "nightclub" [level=1] [ref=e304]:
+      - img [ref=e305]
+      - text: nightclub
+    - generic [ref=e308]:
+      - generic "基础信息" [ref=e309]:
+        - generic [ref=e310]: "1"
+      - generic "技能 & 兴趣" [ref=e312]:
+        - generic [ref=e313]: "2"
+      - generic "形象定制" [ref=e315]:
+        - generic [ref=e316]: "3"
+      - generic "性格测试" [ref=e318]:
+        - generic [ref=e319]: "4"
+      - generic "Agent 护照" [ref=e321]:
+        - generic [ref=e322]: "5"
+    - paragraph [ref=e323]: Agent 护照
+  - generic [ref=e325]:
+    - generic [ref=e326]:
+      - img [ref=e328]
+      - generic [ref=e331]:
+        - heading "CodexFlow" [level=2] [ref=e332]
+        - paragraph [ref=e333]: E2E flow check user
+    - generic [ref=e334]:
+      - generic [ref=e335]:
+        - generic [ref=e336]: UUID
+        - code [ref=e337]: 4dffd8fe-5425-4ae4-9418-ed0c3f953eec
+      - generic [ref=e338]:
+        - generic [ref=e339]: 性格
+        - generic [ref=e340]: 未测试
+      - generic [ref=e341]:
+        - generic [ref=e342]: 技能
+        - generic [ref=e343]: —
+      - generic [ref=e344]:
+        - generic [ref=e345]: 想找
+        - generic [ref=e346]: —
+      - generic [ref=e347]:
+        - generic [ref=e348]: Agent
+        - generic [ref=e349]:
+          - img [ref=e350]
+          - text: 进入夜场后可绑定
+    - paragraph [ref=e353]: 这是你的 agent://nightclub 通行证，推门后就是你的身份
+  - button "推门进入 nightclub" [ref=e355] [cursor=pointer]:
+    - img [ref=e356]
+    - text: 推门进入 nightclub

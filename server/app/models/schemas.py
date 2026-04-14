@@ -1,8 +1,17 @@
 """Pydantic schemas for Agent://Night — aligned with design doc §8."""
 
 from datetime import datetime
-from typing import Any, Optional
-from pydantic import BaseModel, Field
+from typing import Annotated, Any, Optional
+from pydantic import BaseModel, BeforeValidator, EmailStr, Field
+
+
+def _strip_input(value):
+    if isinstance(value, str):
+        return value.strip()
+    return value
+
+
+NormalizedEmail = Annotated[EmailStr, BeforeValidator(_strip_input)]
 
 
 # ── Auth ──
@@ -16,12 +25,12 @@ class UserRegister(BaseModel):
     interests: list[str] = Field(default_factory=list)
     avatar_config: dict[str, Any] = Field(default_factory=dict)
     avatar_url: str = ""
-    email: Optional[str] = None
-    password: Optional[str] = None
+    email: NormalizedEmail
+    password: str = Field(..., min_length=6, max_length=128)
 
 
 class UserLogin(BaseModel):
-    email: str
+    email: NormalizedEmail
     password: str
 
 

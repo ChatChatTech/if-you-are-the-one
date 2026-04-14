@@ -14,28 +14,34 @@ function esc(str) {
 
 export function renderHot(app) {
   app.innerHTML = `
-    <header class="topbar">
-      <button class="btn btn-ghost" id="btn-back">${icon.arrowLeft(14)} 街区</button>
-      <span class="topbar__title">${icon.flame(16)} 热榜</span>
-      <span></span>
-    </header>
-    <div class="hot-layout" id="hot-content">
-      <div class="hot-sidebar" id="hot-sidebar">
-        <div class="empty-state" style="padding:var(--sp-4)">载入中…</div>
-      </div>
-      <div class="hot-detail" id="hot-detail">
-        <div class="hot-detail__placeholder">
-          <span style="font-size:32px;opacity:0.2">${icon.flame(32)}</span>
-          <p style="color:var(--text-muted);font-size:13px;margin-top:var(--sp-2)">点击左侧榜单查看详情</p>
+    <div class="newsprint-page hot-page">
+      <header class="topbar">
+        <button class="btn btn-ghost" id="btn-back">${icon.arrowLeft(14)} 街区</button>
+        <span class="topbar__title">${icon.flame(16)} 热榜快讯</span>
+        <span></span>
+      </header>
+      <section class="np-hot-headline">
+        <p class="np-kicker">CITY DESK</p>
+        <h1>Tonight's Ranking</h1>
+      </section>
+      <div class="hot-layout" id="hot-content">
+        <div class="hot-sidebar" id="hot-sidebar">
+          <div class="empty-state" style="padding:var(--sp-4)">载入中…</div>
+        </div>
+        <div class="hot-detail" id="hot-detail">
+          <div class="hot-detail__placeholder">
+            <span style="font-size:32px;opacity:0.2">${icon.flame(32)}</span>
+            <p style="color:var(--text-muted);font-size:13px;margin-top:var(--sp-2)">点击左侧榜单查看详情</p>
+          </div>
         </div>
       </div>
+      <nav class="bottomnav">
+        <button class="bottomnav__item" data-tab="street">${icon.home(18)}<span>街区</span></button>
+        <button class="bottomnav__item" data-tab="lobster">${icon.shell(18)}<span>龙虾池</span></button>
+        <button class="bottomnav__item bottomnav__item--active" data-tab="hot">${icon.flame(18)}<span>热榜</span></button>
+        <button class="bottomnav__item" data-tab="me">${icon.user(18)}<span>我的</span></button>
+      </nav>
     </div>
-    <nav class="bottomnav">
-      <button class="bottomnav__item" data-tab="street">${icon.home(18)}<span>街区</span></button>
-      <button class="bottomnav__item" data-tab="lobster">${icon.shell(18)}<span>龙虾池</span></button>
-      <button class="bottomnav__item bottomnav__item--active" data-tab="hot">${icon.flame(18)}<span>热榜</span></button>
-      <button class="bottomnav__item" data-tab="me">${icon.user(18)}<span>我的</span></button>
-    </nav>
   `;
 
   document.getElementById("btn-back").addEventListener("click", () => navigate("/"));
@@ -84,7 +90,7 @@ async function loadLeaderboard() {
     sidebar.querySelectorAll(".hot-nav-item").forEach(b => b.classList.toggle("active", b.dataset.key === key));
 
     if (key === "bars") {
-      detail.innerHTML = hot_bars.length === 0 ? emptyDetail("暂无热门场子")
+      detail.innerHTML = hot_bars.length === 0 ? emptyDetail("暂无热门场子", true)
         : `<h3 class="hot-detail__title">${icon.flame(14)} 热门场子</h3>` +
           hot_bars.map((b, i) => `
             <div class="hot-detail-row hot-detail-row--bar" data-bar-id="${b.id}">
@@ -129,8 +135,11 @@ async function loadLeaderboard() {
     }
   }
 
-  function emptyDetail(msg) {
-    return `<div class="hot-detail__placeholder"><p style="color:var(--text-muted);font-size:13px">${msg}</p></div>`;
+  function emptyDetail(msg, suggestAction = false) {
+    return `<div class="hot-detail__placeholder">
+      <p style="color:var(--text-muted);font-size:13px">${msg}</p>
+      ${suggestAction ? `<button class="btn btn-secondary hot-empty-action" id="hot-to-street">${icon.home(12)} 回街区看看</button>` : ""}
+    </div>`;
   }
 
   sidebar.querySelectorAll(".hot-nav-item").forEach(btn => {
@@ -139,4 +148,5 @@ async function loadLeaderboard() {
 
   // Auto-select first section
   if (sections.length > 0) showDetail(sections[0].key);
+  document.getElementById("hot-to-street")?.addEventListener("click", () => navigate("/"));
 }

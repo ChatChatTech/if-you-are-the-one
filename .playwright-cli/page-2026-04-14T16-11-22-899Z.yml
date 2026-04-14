@@ -1,0 +1,32 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - paragraph [ref=e5]: ONBOARDING DESK
+    - heading "夜场入场登记" [level=1] [ref=e6]:
+      - img [ref=e7]
+      - text: 夜场入场登记
+    - generic [ref=e10]:
+      - generic "基础信息" [ref=e11]:
+        - generic [ref=e12]: "1"
+      - generic "技能 & 兴趣" [ref=e14]:
+        - generic [ref=e15]: "2"
+      - generic "形象定制" [ref=e17]:
+        - generic [ref=e18]: "3"
+      - generic "性格测试" [ref=e20]:
+        - generic [ref=e21]: "4"
+      - generic "Agent 护照" [ref=e23]:
+        - generic [ref=e24]: "5"
+    - paragraph [ref=e25]: 基础信息
+  - generic [ref=e27]:
+    - generic [ref=e28]: 昵称 *
+    - textbox "今晚姓什么？" [ref=e29]
+    - generic [ref=e30]: 一句话介绍
+    - textbox "一句话让别人记住你" [ref=e31]
+    - generic [ref=e32]: 邮箱 *
+    - textbox "you@example.com" [ref=e33]
+    - generic [ref=e34]: 密码 *
+    - textbox "至少 6 位" [ref=e35]
+  - generic [ref=e36]:
+    - button "已有账号？登录" [ref=e37] [cursor=pointer]
+    - button "下一步" [ref=e38] [cursor=pointer]:
+      - text: 下一步
+      - img [ref=e39]

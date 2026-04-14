@@ -3,22 +3,26 @@
  */
 
 import { route, render } from "./router.js";
-import { renderStreet } from "./views/street.js";
-import { renderBar } from "./views/bar.js";
-import { renderLogin } from "./views/login.js";
-import { renderOnboarding } from "./views/onboarding.js";
-import { renderMe } from "./views/me.js";
-import { renderLobster } from "./views/lobster.js";
-import { renderHot } from "./views/hot.js";
+const viewLoaderCache = {};
+
+function lazyView(key, importer, exportName) {
+  return async (app, params) => {
+    if (!viewLoaderCache[key]) {
+      viewLoaderCache[key] = importer().then((mod) => mod[exportName]);
+    }
+    const view = await viewLoaderCache[key];
+    return view(app, params);
+  };
+}
 
 // ── Register routes ──
-route("/", renderStreet);
-route("/login", renderLogin);
-route("/onboarding", renderOnboarding);
-route("/bar/:id", renderBar);
-route("/me", renderMe);
-route("/lobster", renderLobster);
-route("/hot", renderHot);
+route("/", lazyView("street", () => import("./views/street.js"), "renderStreet"));
+route("/login", lazyView("login", () => import("./views/login.js"), "renderLogin"));
+route("/onboarding", lazyView("onboarding", () => import("./views/onboarding.js"), "renderOnboarding"));
+route("/bar/:id", lazyView("bar", () => import("./views/bar.js"), "renderBar"));
+route("/me", lazyView("me", () => import("./views/me.js"), "renderMe"));
+route("/lobster", lazyView("lobster", () => import("./views/lobster.js"), "renderLobster"));
+route("/hot", lazyView("hot", () => import("./views/hot.js"), "renderHot"));
 
 // ── Initial render ──
 render();

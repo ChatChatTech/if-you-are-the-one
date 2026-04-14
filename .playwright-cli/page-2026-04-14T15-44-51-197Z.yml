@@ -1,0 +1,35 @@
+- generic [ref=e156]:
+  - generic [ref=e157]:
+    - heading "nightclub" [level=1] [ref=e158]:
+      - img [ref=e159]
+      - text: nightclub
+    - generic [ref=e162]:
+      - generic "基础信息" [ref=e163]:
+        - generic [ref=e164]: "1"
+      - generic "技能 & 兴趣" [ref=e166]:
+        - generic [ref=e167]: "2"
+      - generic "形象定制" [ref=e169]:
+        - generic [ref=e170]: "3"
+      - generic "性格测试" [ref=e172]:
+        - generic [ref=e173]: "4"
+      - generic "Agent 护照" [ref=e175]:
+        - generic [ref=e176]: "5"
+    - paragraph [ref=e177]: 技能 & 兴趣
+  - generic [ref=e179]:
+    - generic [ref=e180]:
+      - img [ref=e181]
+      - text: 我能提供的技能
+    - 'textbox "输入技能后按回车，如: React, Python..." [ref=e185]': React
+    - generic [ref=e186]:
+      - img [ref=e187]
+      - text: 我想找的技能 / 资源
+    - 'textbox "如: 设计师, 投资人..." [active] [ref=e191]': Designer
+    - generic [ref=e192]:
+      - img [ref=e193]
+      - text: 兴趣 / 话题
+    - 'textbox "如: AI, Web3, 独立开发..." [ref=e196]': AI
+  - generic [ref=e197]:
+    - button "跳过" [ref=e198] [cursor=pointer]
+    - button "下一步" [ref=e199] [cursor=pointer]:
+      - text: 下一步
+      - img [ref=e200]

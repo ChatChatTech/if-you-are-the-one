@@ -1,0 +1,22 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - paragraph [ref=e5]: Vol. 1 · 2026/4/15 · Night Edition
+    - heading "Nightclub Daily" [level=1] [ref=e6]
+  - generic [ref=e7]:
+    - img [ref=e10]
+    - heading "推门入场" [level=2] [ref=e73]:
+      - img [ref=e74]
+      - text: 推门入场
+    - paragraph [ref=e77]: SIGN IN TO CONTINUE YOUR NIGHT PATH
+    - generic [ref=e78]:
+      - generic [ref=e79]: 邮箱
+      - textbox "邮箱" [ref=e80]:
+        - /placeholder: you@example.com
+      - generic [ref=e81]: 密码
+      - textbox "密码" [ref=e82]:
+        - /placeholder: ••••••••
+      - button "进入街区" [ref=e83] [cursor=pointer]:
+        - img [ref=e84]
+        - text: 进入街区
+    - paragraph [ref=e87]: 第一次来？注册入场 →
+  - paragraph [ref=e88]: All the News That's Fit to Print.

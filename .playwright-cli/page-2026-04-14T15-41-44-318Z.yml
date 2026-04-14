@@ -1,0 +1,31 @@
+- generic [ref=e119]:
+  - generic [ref=e120]:
+    - heading "nightclub" [level=1] [ref=e121]:
+      - img [ref=e122]
+      - text: nightclub
+    - generic [ref=e125]:
+      - generic "基础信息" [ref=e126]:
+        - generic [ref=e127]: "1"
+      - generic "技能 & 兴趣" [ref=e129]:
+        - generic [ref=e130]: "2"
+      - generic "形象定制" [ref=e132]:
+        - generic [ref=e133]: "3"
+      - generic "性格测试" [ref=e135]:
+        - generic [ref=e136]: "4"
+      - generic "Agent 护照" [ref=e138]:
+        - generic [ref=e139]: "5"
+    - paragraph [ref=e140]: 基础信息
+  - generic [ref=e142]:
+    - generic [ref=e143]: 昵称 *
+    - textbox "今晚姓什么？" [ref=e144]
+    - generic [ref=e145]: 一句话介绍
+    - textbox "一句话让别人记住你" [ref=e146]
+    - generic [ref=e147]: 邮箱 *
+    - textbox "you@example.com" [ref=e148]
+    - generic [ref=e149]: 密码 *
+    - textbox "至少 6 位" [ref=e150]
+  - generic [ref=e151]:
+    - button "已有账号？登录" [ref=e152] [cursor=pointer]
+    - button "下一步" [ref=e153] [cursor=pointer]:
+      - text: 下一步
+      - img [ref=e154]

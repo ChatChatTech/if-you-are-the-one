@@ -1,0 +1,31 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e359]:
+    - img [ref=e361]:
+      - generic [ref=e363]:
+        - generic [ref=e364] [cursor=pointer]:
+          - generic:
+            - generic:
+              - img
+        - generic [ref=e366] [cursor=pointer]:
+          - generic:
+            - generic: C
+    - generic [ref=e369]:
+      - generic [ref=e370]:
+        - button "Everyone" [ref=e371] [cursor=pointer]
+        - button "My Circle" [ref=e372] [cursor=pointer]
+      - img [ref=e373]
+      - textbox "Search people by name, bio, or tags..." [ref=e375]
+    - navigation [ref=e376]:
+      - button "街区" [ref=e377] [cursor=pointer]:
+        - img [ref=e378]
+        - generic [ref=e381]: 街区
+      - button "龙虾池" [ref=e382] [cursor=pointer]:
+        - img [ref=e383]
+        - generic [ref=e385]: 龙虾池
+      - button "热榜" [ref=e386] [cursor=pointer]:
+        - img [ref=e387]
+        - generic [ref=e389]: 热榜
+      - button "我的" [ref=e390] [cursor=pointer]:
+        - img [ref=e391]
+        - generic [ref=e394]: 我的
+  - generic [ref=e395]: 欢迎来到 nightclub！今晚这里有人。

@@ -1,0 +1,40 @@
+- generic [ref=e2]:
+  - banner [ref=e493]:
+    - button "街区" [ref=e494] [cursor=pointer]:
+      - img [ref=e495]
+      - text: 街区
+    - generic [ref=e497]:
+      - img [ref=e498]
+      - text: 热榜
+  - generic [ref=e500]:
+    - generic [ref=e501]:
+      - button "热门场子 0" [ref=e502] [cursor=pointer]:
+        - img [ref=e504]
+        - generic [ref=e506]: 热门场子
+        - generic [ref=e507]: "0"
+      - button "最受欢迎 0" [ref=e508] [cursor=pointer]:
+        - img [ref=e510]
+        - generic [ref=e515]: 最受欢迎
+        - generic [ref=e516]: "0"
+      - button "最主动 0" [ref=e517] [cursor=pointer]:
+        - img [ref=e519]
+        - generic [ref=e521]: 最主动
+        - generic [ref=e522]: "0"
+      - button "热门标签 0" [ref=e523] [cursor=pointer]:
+        - img [ref=e525]
+        - generic [ref=e528]: 热门标签
+        - generic [ref=e529]: "0"
+    - paragraph [ref=e532]: 暂无热门场子
+  - navigation [ref=e533]:
+    - button "街区" [ref=e534] [cursor=pointer]:
+      - img [ref=e535]
+      - generic [ref=e538]: 街区
+    - button "龙虾池" [ref=e539] [cursor=pointer]:
+      - img [ref=e540]
+      - generic [ref=e542]: 龙虾池
+    - button "热榜" [ref=e543] [cursor=pointer]:
+      - img [ref=e544]
+      - generic [ref=e546]: 热榜
+    - button "我的" [ref=e547] [cursor=pointer]:
+      - img [ref=e548]
+      - generic [ref=e551]: 我的

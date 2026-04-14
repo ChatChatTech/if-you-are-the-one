@@ -12,6 +12,7 @@ import { api, isLoggedIn } from "../api.js";
 import { navigate } from "../router.js";
 import { showToast } from "../toast.js";
 import { icon } from "../icons.js";
+import { createStreetSearch, resolveCircleNodeIds } from "./street-search.js";
 
 function esc(str) {
   const d = document.createElement("div");
@@ -30,8 +31,24 @@ function getBarColor(name) { return BAR_COLORS[hash(name) % BAR_COLORS.length]; 
 function getBarRadius(userCount, maxSeats) { return 42 + ((userCount || 0) / (maxSeats || 6)) * 34; }
 const AVATAR_R = 36;
 
+function optimizeAvatarUrl(url) {
+  if (!url) return url;
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes("dicebear.com")) {
+      if (!parsed.searchParams.has("size")) parsed.searchParams.set("size", "128");
+      return parsed.toString();
+    }
+  } catch {
+    return url;
+  }
+  return url;
+}
+
 // ═══ Main render ═══
 export function renderStreet(app) {
+  document.body.classList.add("street-newsprint-active");
+
   let simulation = null;
   let selectedNode = null;
   let nodesData = [];
@@ -40,10 +57,11 @@ export function renderStreet(app) {
   let selectedProfileCard = null;
   let selectedTagCard = null;
   let currentUser = null;
+  let searchCleanup = null;
 
   app.innerHTML = `
-    <div class="street-layout">
-      <div id="graph-container" style="position:fixed;inset:0;z-index:1;background:var(--bg-base)"></div>
+    <div class="street-layout newsprint-page street-newsprint">
+      <div id="graph-container" style="position:fixed;inset:0;z-index:1;background:var(--np-bg)"></div>
       <div class="network-search-container" id="street-search">
         <div class="network-search-bar">
           <div class="filter-toggle">
@@ -77,7 +95,6 @@ export function renderStreet(app) {
   );
 
   loadGraph();
-  setupSearch();
 
   // ═══ D3 Force Graph (ClawMatch design) ═══
   async function loadGraph() {
@@ -95,6 +112,8 @@ export function renderStreet(app) {
     linksData = links;
 
     if (isLoggedIn()) { try { currentUser = await api.get("/api/users/me"); } catch {} }
+    if (searchCleanup) searchCleanup();
+    searchCleanup = setupSearch();
 
     const svg = container.append("svg")
       .attr("width", width).attr("height", height)
@@ -144,7 +163,11 @@ export function renderStreet(app) {
           if (d.type === "bar") return getBarRadius(d.user_count, d.max_seats) + 15;
           return getTagRadius(d.totalCount || d.count) + 15;
         })
-      );
+      )
+      .alphaDecay(0.04)
+      .velocityDecay(0.45);
+
+    let tickCounter = 0;
 
     // LINKS rendered first (behind nodes)
     const allLink = g.append("g").attr("class", "graph-links")
@@ -176,49 +199,72 @@ export function renderStreet(app) {
       });
     node.call(dragBehavior);
 
-    // ═══ Render person nodes (foreignObject avatar, ClawMatch style) ═══
+    // ═══ Render person nodes (optimized SVG avatar render path) ═══
     node.filter(d => d.type === "person").each(function (d) {
       const ng = d3.select(this);
+      const clipId = `avatar-clip-${String(d.id).replace(/[^a-zA-Z0-9_-]/g, "_")}`;
 
       // Invisible hit area
       ng.append("circle").attr("r", AVATAR_R)
         .attr("fill", "rgba(255,255,255,0.001)")
         .style("cursor", "pointer");
 
-      // Avatar via foreignObject
-      const fo = ng.append("foreignObject")
-        .attr("x", -AVATAR_R).attr("y", -AVATAR_R)
-        .attr("width", AVATAR_R * 2).attr("height", AVATAR_R * 2)
-        .style("overflow", "visible").style("pointer-events", "none");
-
-      const avatarShell = fo.append("xhtml:div")
-        .style("width", "100%").style("height", "100%")
-        .style("border-radius", "50%").style("overflow", "hidden")
-        .style("background", "#fff");
-
       if (d.avatar_url) {
-        avatarShell.append("xhtml:img")
-          .attr("src", d.avatar_url)
-          .style("width", "100%").style("height", "100%")
-          .style("object-fit", "cover").style("object-position", "center top")
-          .style("display", "block");
+        ng.append("clipPath")
+          .attr("id", clipId)
+          .append("circle")
+          .attr("r", AVATAR_R)
+          .attr("cx", 0)
+          .attr("cy", 0);
+
+        ng.append("image")
+          .attr("href", optimizeAvatarUrl(d.avatar_url))
+          .attr("x", -AVATAR_R)
+          .attr("y", -AVATAR_R)
+          .attr("width", AVATAR_R * 2)
+          .attr("height", AVATAR_R * 2)
+          .attr("clip-path", `url(#${clipId})`)
+          .attr("preserveAspectRatio", "xMidYMid slice")
+          .style("pointer-events", "none");
       } else {
-        avatarShell
-          .style("display", "flex").style("align-items", "center").style("justify-content", "center")
-          .style("font-weight", "600").style("font-size", "18px")
-          .style("color", "var(--text-primary)").style("background", "var(--bg-elevated)")
+        ng.append("circle")
+          .attr("r", AVATAR_R)
+          .attr("fill", "var(--bg-elevated)")
+          .style("pointer-events", "none");
+
+        ng.append("text")
+          .attr("text-anchor", "middle")
+          .attr("dy", 6)
+          .attr("font-size", "18px")
+          .attr("font-weight", "600")
+          .attr("fill", "var(--text-primary)")
+          .style("pointer-events", "none")
           .text((d.name || "?")[0]);
       }
 
       // Border ring
-      ng.append("circle").attr("r", AVATAR_R)
+      ng.append("circle").attr("class", "person-ring").attr("r", AVATAR_R)
         .attr("fill", "none")
         .attr("stroke", "rgba(0, 0, 0, 0.08)")
         .attr("stroke-width", 2)
         .style("pointer-events", "none")
-        .style("filter", "drop-shadow(0 2px 12px rgba(0, 0, 0, 0.08))")
+        .style("filter", "drop-shadow(0 1px 6px rgba(0, 0, 0, 0.07))")
         .style("transition", "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)");
     });
+
+    function applyGraphQuality(settled) {
+      const effect = settled ? "drop-shadow(0 1px 6px rgba(0, 0, 0, 0.07))" : "none";
+      g.selectAll(".person-ring").style("filter", effect);
+      if (settled) {
+        g.selectAll(".bar-node circle").style("filter", "drop-shadow(0 1px 6px rgba(0,0,0,0.08))");
+        g.selectAll(".tag-node circle").style("filter", "drop-shadow(0 1px 4px rgba(0,0,0,0.06))");
+      } else {
+        g.selectAll(".bar-node circle").style("filter", "none");
+        g.selectAll(".tag-node circle").style("filter", "none");
+      }
+    }
+
+    applyGraphQuality(false);
 
     // ═══ Render bar nodes (colored circles with label) ═══
     node.filter(d => d.type === "bar").each(function (d) {
@@ -278,6 +324,8 @@ export function renderStreet(app) {
 
     // ═══ Tick — links stop at node edges (ClawMatch style) ═══
     simulation.on("tick", () => {
+      tickCounter += 1;
+      if (tickCounter % 2 !== 0) return;
       const getNodeRadius = (n) => {
         if (n.type === "person") return AVATAR_R;
         if (n.type === "bar") return getBarRadius(n.user_count, n.max_seats);
@@ -307,6 +355,11 @@ export function renderStreet(app) {
         });
 
       node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+      if (simulation.alpha() < 0.03) {
+        applyGraphQuality(true);
+        simulation.stop();
+      }
     });
 
     // ═══ Click handler (ClawMatch style) ═══
@@ -629,75 +682,12 @@ export function renderStreet(app) {
     const searchInput = document.getElementById("street-search-input");
     const resultsEl = document.getElementById("street-search-results");
     const searchContainer = document.getElementById("street-search");
-    const filterBtns = searchContainer.querySelectorAll(".filter-option");
-    let currentFilter = "everyone";
-
-    filterBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        filterBtns.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentFilter = btn.dataset.filter;
-        if (searchInput.value.trim()) doSearch(searchInput.value);
-      });
-    });
-
-    searchInput.addEventListener("input", () => {
-      clearTimeout(searchInput._debounce);
-      searchInput._debounce = setTimeout(() => doSearch(searchInput.value), 150);
-    });
-    searchInput.addEventListener("focus", () => {
-      searchContainer.querySelector(".network-search-bar").classList.add("focused");
-      if (searchInput.value.trim()) showResults();
-    });
-    searchInput.addEventListener("blur", () => {
-      searchContainer.querySelector(".network-search-bar").classList.remove("focused");
-      setTimeout(hideResults, 200);
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!searchContainer.contains(e.target)) hideResults();
-    });
-
-    function doSearch(raw) {
-      const q = (raw || "").trim().toLowerCase();
-      if (!q) { hideResults(); return; }
-      const results = nodesData.filter(n => {
-        if (n.type === "tag") return false;
-        if (n.type !== "person" && n.type !== "bar") return false;
-        const name = (n.name || "").toLowerCase();
-        const bio = (n.bio || n.description || "").toLowerCase();
-        const tags = (n.tags || []).join(" ").toLowerCase();
-        return name.includes(q) || bio.includes(q) || tags.includes(q);
-      }).slice(0, 12);
-
-      if (results.length === 0) {
-        resultsEl.innerHTML = `<div class="search-no-results">No results found for "${esc(raw)}"</div>`;
-      } else {
-        resultsEl.innerHTML = results.map(n => `
-          <div class="search-result-item" data-person-id="${n.id}">
-            ${n.type === "person" ? renderSearchAvatar(n) : renderSearchBarAvatar(n)}
-            <div class="search-result-info">
-              <div class="search-result-name">${esc(n.name || "Unknown")}</div>
-              <div class="search-result-bio">${esc(n.bio || n.description || "")}</div>
-              ${n.tags && n.tags.length ? `<div class="search-result-tags">${n.tags.slice(0, 3).map(t => `<span class="search-result-tag">${esc(t)}</span>`).join("")}</div>` : ""}
-            </div>
-          </div>
-        `).join("");
-      }
-      showResults();
-
-      resultsEl.querySelectorAll(".search-result-item").forEach(item => {
-        item.addEventListener("click", () => {
-          const id = item.dataset.personId;
-          const nd = nodesData.find(n => n.id === id);
-          if (nd) {
-            window.dispatchEvent(new CustomEvent("selectNetworkNode", { detail: { personId: id, path: [id] } }));
-          }
-          searchInput.value = "";
-          hideResults();
-        });
-      });
-    }
+    const onSelectNode = (personId) => {
+      const nd = nodesData.find((n) => n.id === personId);
+      if (!nd) return;
+      const nodeEl = d3.selectAll(".node").filter((n) => n.id === personId);
+      if (nodeEl.node()) nodeEl.dispatch("click");
+    };
 
     function renderSearchAvatar(n) {
       if (n.avatar_url) {
@@ -710,23 +700,27 @@ export function renderStreet(app) {
       return `<div style="width:40px;height:40px;border-radius:50%;background:${color}18;display:flex;align-items:center;justify-content:center;color:${color};font-weight:700;flex-shrink:0">${esc((n.name || "?")[0])}</div>`;
     }
 
-    function showResults() { resultsEl.classList.add("visible"); searchContainer.classList.add("results-open"); }
-    function hideResults() { resultsEl.classList.remove("visible"); searchContainer.classList.remove("results-open"); }
-
-    // Listen for selectNetworkNode events (from search)
-    window.addEventListener("selectNetworkNode", (event) => {
-      const { personId } = event.detail;
-      const nd = nodesData.find(n => n.id === personId);
-      if (!nd) return;
-      // Trigger click behavior on the node
-      const nodeEl = d3.selectAll(".node").filter(n => n.id === personId);
-      if (nodeEl.node()) nodeEl.dispatch("click");
+    return createStreetSearch({
+      searchContainer,
+      searchInput,
+      resultsEl,
+      getNodes: () => nodesData,
+      getCircleNodeIds: () => {
+        const ownerId = currentUser?.uuid;
+        return resolveCircleNodeIds(linksData, ownerId);
+      },
+      onSelectNode,
+      renderSearchAvatar,
+      renderSearchBarAvatar,
+      esc,
     });
   }
 
   // Cleanup
   return () => {
     if (simulation) simulation.stop();
+    if (searchCleanup) searchCleanup();
     d3.selectAll(".profile-card").remove();
+    document.body.classList.remove("street-newsprint-active");
   };
 }

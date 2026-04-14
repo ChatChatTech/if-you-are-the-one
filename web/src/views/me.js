@@ -21,17 +21,22 @@ const TAG_CATEGORIES = [
 
 export function renderMe(app) {
   if (!isLoggedIn()) {
-    navigate("/login");
+    navigate(`/login?next=${encodeURIComponent(location.pathname)}`);
     return;
   }
 
   app.innerHTML = `
-    <div class="me-layout">
+    <div class="me-layout newsprint-page me-newsprint">
     <header class="topbar">
       <button class="btn btn-ghost" id="btn-back-street">${icon.arrowLeft(14)} 街区</button>
       <span class="topbar__title">${icon.user(16)} 我的</span>
       <button class="btn btn-ghost" id="btn-logout">${icon.logOut(14)} 退出</button>
     </header>
+    <section class="np-me-headline">
+      <p class="np-kicker">PROFILE DESK</p>
+      <h1>My Evening Ledger</h1>
+      <p class="np-me-meta">Vol. 1 | ${new Date().toLocaleDateString("zh-CN")} | Personal Edition</p>
+    </section>
     <div class="me-bento" id="profile-content">
       <div class="empty-state" style="grid-column:1/-1">载入中…</div>
     </div>
@@ -92,12 +97,13 @@ async function loadProfile() {
           ${iconFn(12)} ${cat.label}
         </h3>
         <div class="me-tag-list" id="tags-${cat.key}">
-          ${tags.map((t) => `<span class="me-tag" data-tag="${esc(t)}" style="border-color:${cat.color}33;color:${cat.color}">${esc(t)} <button class="me-tag__rm" title="移除">&times;</button></span>`).join("")}
+          ${tags.map((t) => `<span class="me-tag" data-tag="${esc(t)}" style="border-color:${cat.color}33;color:${cat.color}">${esc(t)} <button class="me-tag__rm" title="移除 ${esc(t)}" aria-label="移除 ${esc(t)}">&times;</button></span>`).join("")}
         </div>
         <div class="me-tag-input-row">
           <input class="me-tag-input" id="input-${cat.key}" type="text"
             list="dl-${cat.key}" placeholder="输入关键词，回车添加"
             maxlength="20" autocomplete="off" />
+          <button type="button" class="btn btn-secondary btn-sm me-tag-add-btn" id="add-${cat.key}">添加</button>
           <datalist id="dl-${cat.key}">
             ${(availableTags || []).map((t) => `<option value="${esc(t.name)}">`).join("")}
           </datalist>
@@ -184,27 +190,42 @@ async function loadProfile() {
     ).join("");
   }
 
+  function addTag(catKey, valRaw) {
+    const val = valRaw.trim();
+    if (!val) return { ok: false };
+    if (tagState[catKey].length >= MAX_TAGS) {
+      showToast(`最多 ${MAX_TAGS} 个关键词`, "pink");
+      return { ok: false };
+    }
+    if (tagState[catKey].includes(val)) {
+      showToast("已有此关键词", "pink");
+      return { ok: false };
+    }
+    tagState[catKey].push(val);
+    renderTagList(catKey);
+    return { ok: true, value: val };
+  }
+
   for (const cat of TAG_CATEGORIES) {
     const input = document.getElementById(`input-${cat.key}`);
+    const addBtn = document.getElementById(`add-${cat.key}`);
     if (!input) continue;
     input.addEventListener("keydown", async (e) => {
       if (e.key !== "Enter") return;
       e.preventDefault();
-      const val = input.value.trim();
-      if (!val) return;
-      if (tagState[cat.key].length >= MAX_TAGS) {
-        showToast(`最多 ${MAX_TAGS} 个关键词`, "pink");
-        return;
-      }
-      if (tagState[cat.key].includes(val)) {
-        showToast("已有此关键词", "pink");
-        return;
-      }
-      tagState[cat.key].push(val);
+      const result = addTag(cat.key, input.value);
+      if (!result.ok) return;
       input.value = "";
-      renderTagList(cat.key);
       await saveCategory(cat.key);
-      showToast(`已添加「${val}」`, "cyan");
+      showToast(`已添加「${result.value}」`, "cyan");
+    });
+
+    addBtn?.addEventListener("click", async () => {
+      const result = addTag(cat.key, input.value);
+      if (!result.ok) return;
+      input.value = "";
+      await saveCategory(cat.key);
+      showToast(`已添加「${result.value}」`, "cyan");
     });
   }
 

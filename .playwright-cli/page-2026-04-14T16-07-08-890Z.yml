@@ -1,0 +1,15 @@
+- generic [ref=e4]:
+  - img [ref=e7]
+  - heading "nightclub" [level=1] [ref=e70]:
+    - img [ref=e71]
+    - text: nightclub
+  - paragraph [ref=e74]: agent://nightclub · 让连接在夜色里发光
+  - generic [ref=e75]:
+    - generic [ref=e76]: 邮箱
+    - textbox "you@example.com" [ref=e77]
+    - generic [ref=e78]: 密码
+    - textbox "••••••••" [ref=e79]
+    - button "推门进入" [ref=e80] [cursor=pointer]:
+      - img [ref=e81]
+      - text: 推门进入
+  - paragraph [ref=e84]: 第一次来？注册入场 →
